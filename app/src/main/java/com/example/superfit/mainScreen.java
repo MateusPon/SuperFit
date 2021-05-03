@@ -32,12 +32,7 @@ public class mainScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
-
-
-
-
     }
-
 
     public void Seeall(View view1) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -66,6 +61,11 @@ public class mainScreen extends AppCompatActivity {
 
     public void Recipes(View view) {
         Intent intent = new Intent(this, RecipesList.class);
+        startActivity(intent);
+    }
+
+    public void Authorization(View view) {
+        Intent intent = new Intent(mainScreen.this,Authorization.class);
         startActivity(intent);
     }
 }
