@@ -1,43 +1,35 @@
 package com.example.superfit;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.ToggleButton;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.xml.sax.Parser;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
 
 public class RecipesList extends AppCompatActivity {
 
-    CheckBox balancedButton;
-    CheckBox highFiberButton;
-    CheckBox highProteinButton;
+    private ToggleButton balancedButton;
+    private ToggleButton highFiberButton;
+    private ToggleButton highProteinButton;
 
-    ListView recipesList;
+    private ListView rec;
     private RecipeAdapter adapter;
     private ArrayList<Recipe> recipes;
 
@@ -55,11 +47,10 @@ public class RecipesList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipes_list);
 
-
         balancedButton = findViewById(R.id.balanced_button);
         highFiberButton = findViewById(R.id.high_fiber_button);
         highProteinButton = findViewById(R.id.high_protein_button);
-        recipesList = findViewById(R.id.recycleView);
+        rec = findViewById(R.id.recycle_View);
         recipes = new ArrayList<>();
         adapter = new RecipeAdapter(this, recipes);
 
@@ -76,7 +67,7 @@ public class RecipesList extends AppCompatActivity {
                     public void run() {
                         try {
                             Parsing(data);
-                            recipesList.setAdapter(adapter);
+                            rec.setAdapter(adapter);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -95,18 +86,18 @@ public class RecipesList extends AppCompatActivity {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        try {
+                        try{
                             data = GetDownloadData();
-                        } catch (Exception e) {
+                        }catch (Exception e){
                             e.printStackTrace();
                         }
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                try {
+                                try{
                                     Parsing(data);
-                                    recipesList.setAdapter(adapter);
-                                } catch (Exception e) {
+                                    rec.setAdapter(adapter);
+                                }catch (Exception e){
                                     e.printStackTrace();
                                 }
                             }
@@ -122,12 +113,13 @@ public class RecipesList extends AppCompatActivity {
                 return false;
             }
         });
-    }
-    private String GetDownloadData() {
 
+    }
+
+    private String GetDownloadData() {
         StringBuilder result = new StringBuilder();
         try {
-            connection = (HttpURLConnection) new URL("https://api.edamam.com/search?q=" + prodName + "&app_id=4da5a427&app_key=6dd6f99730da1737e964379d886e607d&diet=high-protein").openConnection();
+            connection = (HttpURLConnection) new URL("https://api.edamam.com/search?q=chiken&app_id=4da5a427&app_key=6dd6f99730da1737e964379d886e607d&diet=high-protein").openConnection();
             // установка метода запроса
             connection.setRequestMethod("GET");
             // поключение
@@ -140,7 +132,6 @@ public class RecipesList extends AppCompatActivity {
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
                     result.append("\n");
-//                    Log.d("MSG", line);
                 }
             }
         }
@@ -154,13 +145,10 @@ public class RecipesList extends AppCompatActivity {
         return result.toString();
     }
 
-    private void Parsing(String jsonData) throws ParseException {
-        Log.d("Msg", "Привет!");
-//        try {
+    private void Parsing(String data) {
+        try {
             // парсинг json
-//            Object object = new JSONParser().parse(jsonData);
-
-            Object object = new JSONParser().parse(jsonData);
+            Object object = new JSONParser().parse(data);
             org.json.simple.JSONObject jsonObject = (JSONObject) object;
             // получение списка рецептов
             org.json.simple.JSONArray jsonArray = (org.json.simple.JSONArray) jsonObject.get("hits");
@@ -196,9 +184,34 @@ public class RecipesList extends AppCompatActivity {
 
                 recipes.add(recipe);
             }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    public void onClick_highProtein(View v) {
+
+        highFiberButton.setChecked(false);
+        balancedButton.setChecked(false);
+
+    }
+
+    public void onMainScreen(View view) {
+        Intent intent = new Intent(RecipesList.this,mainScreen.class);
+        startActivity(intent);
+    }
+
+    public void onClick_Balanced(View v) {
+
+        highFiberButton.setChecked(false);
+        highProteinButton.setChecked(false);
+
+    }
+
+    public void onClick_HighFiber(View v) {
+
+        balancedButton.setChecked(false);
+        highProteinButton.setChecked(false);
+
+    }
 }

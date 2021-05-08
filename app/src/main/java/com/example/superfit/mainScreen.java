@@ -60,7 +60,7 @@ public class mainScreen extends AppCompatActivity {
     }
 
     public void Recipes(View view) {
-        Intent intent = new Intent(this, RecipesList.class);
+        Intent intent = new Intent(mainScreen.this, RecipesList.class);
         startActivity(intent);
     }
 

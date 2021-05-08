@@ -12,13 +12,14 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class RecipeAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<Recipe> data, datafull;
 
-    public RecipeAdapter(Context context, ArrayList<Recipe> data) {
+    public RecipeAdapter(Context context, ArrayList<Recipe>data){
         this.context = context;
         this.data = data;
         datafull = this.data;
@@ -57,9 +58,11 @@ public class RecipeAdapter extends BaseAdapter {
         carbsText.setText(data.get(position).getCarbs()+"g");
 
         return view;
+
     }
-    public Filter getFilter(){
-        return exampleFilter;
+
+    public Filter getFilter() {
+        return  exampleFilter;
     }
     private Filter exampleFilter = new Filter() {
         @Override
@@ -88,5 +91,4 @@ public class RecipeAdapter extends BaseAdapter {
             notifyDataSetChanged();
         }
     };
-
 }
